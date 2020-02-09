@@ -20,45 +20,47 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        for ($i = 1; $i <= 5; $i++) {
+        //YnovUsers
+        for ($i = 1; $i <= 3; $i++) {
             $user = new User;
             $user->setUsername('user' . $i);
-            $password = $this->encoder->encodePassword($user, '123456');
-            $user->setPassword($password);
             $user->setEmail('user' . $i . '@gmail.com');
-            $user->setPhoto('image' . rand(1, 3) . '.jpg');
-
-            for ($j = 1; $j <= 5; $j++) {
-                $groups = new Groups;
-                $groups->setNom('Groupe N° ' . $j . ' du user ' . $i);
-                $groups->addUser($user); //Nombre des users dans le groupe 
-                $groups->setPhoto('image' . rand(1, 3) . '.jpg');
-                $groups->setUserAdmin($user); //L'admin du groupe
-                $groups->setDate(new \DateTime('now'));
-                $user->addGroups($groups); //liste des groupes attribués à l'utilisateur
-                $manager->persist($groups);
-            }
-
-            for ($x = 1; $x <= rand(1, 5); $x++) {
-                $message = new Message;
-                $message->setContent('Message N°' . $x);
-                $message->setState(rand(0, 3));
-                $message->setDateTime(new \DateTime('now'));
-                $message->setGroupe($groups);
-                $message->setUser($user); //auteur du message
-                $groups->addMessage($message); //Les IDs des messages du groupe
-                $manager->persist($message);
-            }
-
-
+            $password = $this->encoder->encodePassword($user, 'Ynov2020');
+            $user->setPassword($password);
+            $user->setPhoto('imageProfil' . rand(1, 300000000) . '.jpg');
             $manager->persist($user);
 
+            for ($j = 1; $j <= 3; $j++) {
+                $group = new Groups;
+                $group->setNom('Groupe N° ' . $j . ' du user ' . $i);
+                $group->setPhoto('imageGroupe' . rand(1, 99999999) . '.jpg');
+                $group->setDate(new \DateTime('now'));
 
+                $group->addUser($user); //Les users dans le groupe 
 
+                $group->setUserAdmin($user); //L'admin du groupe
 
+                //$user->addGroups($groups); //liste des groupes attribués à l'utilisateur
+                $manager->persist($group);
 
-
-            $manager->flush();
+                for ($x = 1; $x <= rand(1, 3); $x++) {
+                    $message = new Message;
+                    $message->setContent('Message N° ' . $x);
+                    $message->setDateTime(new \DateTime('now'));
+                    $message->setState(1);
+                    $message->setGroupe($group);
+                    $message->setUser($user); //auteur du message
+                    $group->addMessage($message); // Les messages du groupe
+                    $manager->persist($message);
+                }
+            }
         }
+
+
+
+
+
+
+        $manager->flush();
     }
 }
