@@ -51,4 +51,14 @@ class AdminController extends AbstractController
 
     public function loginCheck()
     {}
+
+    /**
+     * @Route("/", name="home") 
+     * route nécessaire pour le fonctionnement de securité de ma connexion de SF
+     */
+
+    public function homeRedirect()
+    {
+        return $this -> redirectToRoute('app_login');
+    }
 }

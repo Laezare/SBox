@@ -27,7 +27,7 @@
 							{% endif %}
 							<!-- Boutton créer un groupe & Logout -->
 						</div>
-						<div class="Logout">
+						<div class="logout">
 							<a href="{{ path('app_logout') }}" type="button" class="btn btn-danger">Logout</a>
 						</div>
 						<div class="createGroup">
@@ -107,13 +107,43 @@
 					<!-- Formulaire de groupe -->
 
 					{% if groupe is not defined %}
-						<div class="card">
-							<h1>Create a Groupe</h1>
+						<div class="wrapper" id="formContent">
+							<h1 style="margin-top:20px">Créer un Groupe</h1>
 							{{form_start(groupForm)}}
-
-							<button class="btn btn-lg btn-primary" type="submit" style="margin:2em">
-								Register
-							</button>
+							{{form_label(groupForm.nom)}}
+							<div>
+							{{form_row(groupForm.nom,  {'label' : false} ) }}
+							</div>
+							{{form_label(groupForm.photo)}}
+							<div>
+							{{form_row(groupForm.photo,  {'label' : false})}}
+							</div>
+							
+							<!-- parse users et le form pour custom les checkboxes -->
+							<div>
+							{{form_label(groupForm.users)}}
+							</div>
+							{% for u in groupForm.users %}
+								<!-- ne peut se selectionner dans les users a ajouter au groupe (note: la comparaison tjrs vraie ou alors form force a afficher le user) -->
+								{% if app.user.username != form_label(u) %}
+									{{form_label(u)}}
+									{{form_widget(u)}}	
+								{% endif %}
+							{% endfor %}
+							
+							<!-- css test checkboxes 
+							{% for u in groupForm.users %}
+							<div class="container">
+									{{form_label(u)}}
+									{{form_widget(u)}}
+							</div>	
+							{% endfor %}
+							-->
+							<div>
+								<button class="btn btn-lg btn-primary" type="submit" style="margin:2em">
+									Register
+								</button>
+							</div>  
 							{{form_end(groupForm)}}
 
 						</div>
@@ -149,21 +179,104 @@
 				margin: 0;
 				height: 100%;
 			}
-
-			.card {
-				width: 18rem;
-				margin: 10% auto auto;
+			/*form css*/
+			.wrapper {
+  			display: flex;
+  			align-items: center;
+ 			flex-direction: column; 
+  			justify-content: center;
+  			width: 100%;
+  			padding: 10px;
+  			margin:auto;
+  			margin-top:10%;
+  			margin-bottom:10%
 			}
+			#formContent {
+			-webkit-border-radius: 10px 10px 10px 10px;
+			border-radius: 10px 10px 10px 10px;
+			background: #fff;
+			padding: 5px;
+			width: 90%;
+			max-width: 450px;
+			position: relative;
+			padding: 0px;
+			-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+			box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+			text-align: center;
+			}
+			 /* Customize the label (the container) */
 			.container {
-				max-width: 1170px;
-				margin: auto;
+			display: block;
+			position: relative;
+			padding-left: 35px;
+			margin-bottom: 12px;
+			cursor: pointer;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			overflow-y: auto
 			}
+
+			/* Hide the browser's default radio button */
+			.container input {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 10px;
+			width: 10px;
+			background-color: #eee;
+			border-radius: 50%;
+			}
+
+			/* Create a custom radio button */
+			.checkmark {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 25px;
+			width: 25px;
+			background-color: #eee;
+			border-radius: 50%;
+			}
+
+			/* On mouse-over, add a grey background color */
+			.container:hover input ~ .checkmark {
+			background-color: #ccc;
+			}
+
+			/* When the radio button is checked, add a blue background */
+			.container input:checked ~ .checkmark {
+			background-color: #2196F3;
+			}
+
+			/* Create the indicator (the dot/circle - hidden when not checked) */
+			.checkmark:after {
+			content: "";
+			position: absolute;
+			display: none;
+			}
+
+			/* Show the indicator (dot/circle) when checked */
+			.container input:checked ~ .checkmark:after {
+			display: block;
+			}
+
+			/* Style the indicator (dot/circle) */
+			.container .checkmark:after {
+			top: 9px;
+			left: 9px;
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: white;
+			} 
 			img {
 				max-width: 100%;
 			}
 			.createGroup {
-				margin-left: 50%;
-				margin-top: 2%
+				margin-left: 60%;
+				margin-top: -6%
 			}
 			.inbox_people {
 				background: #f8f8f8 none repeat scroll 0 0;
@@ -182,11 +295,14 @@
 			.top_spac {
 				margin: 20px 0 0;
 			}
-
+			.logout {
+				margin-top:2%
+			}
 
 			.recent_heading {
 				float: left;
 				width: 20%;
+				margin-top:2%
 			}
 			.srch_bar {
 				display: inline-block;

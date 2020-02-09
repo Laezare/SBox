@@ -20,7 +20,7 @@ class MessagesController extends AbstractController
         //cherche l'user de la session
         $user = $this->getUser();
 
-        //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         //Trouve les groupes de l'utilisateur
         $repository = $this->getDoctrine()->getRepository(Groups::class);
         $groups = $repository->findAll();
@@ -38,6 +38,7 @@ class MessagesController extends AbstractController
             $manager -> persist($groupForm);
             $groupForm->setDate(new \DateTime('now'));
             $groupForm->SetUserAdmin($user);
+            $groupForm->addUser($user);
             $manager -> flush();
             
             $this -> addFlash('alert', 'success Le User a bien été enregisté');
@@ -55,6 +56,7 @@ class MessagesController extends AbstractController
 
     public function conversation($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         //cherche l'user de la session
         $user = $this->getUser();
 
