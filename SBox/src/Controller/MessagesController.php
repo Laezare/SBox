@@ -55,6 +55,9 @@ class MessagesController extends AbstractController
 
     public function conversation($id, Request $request)
     {
+        //cherche l'user de la session
+        $user = $this->getUser();
+
         $repository = $this->getDoctrine()->getRepository(Groups::class);
         $groups = $repository->findAll();
         //1 : Récupérer les infos du post
@@ -74,11 +77,10 @@ class MessagesController extends AbstractController
             $messageForm->setDatetime(new \DateTime('now'));
             $messageForm->setState(1);
             $messageForm->SetGroupe($groupe);
-            //$messageForm->SetUserAdmin($groupe);
+            $messageForm->SetUser($user);
             $manager -> flush();
             
-            $this -> addFlash('alert', 'success Le User a bien été enregisté');
-            return $this -> redirectToRoute('messages');
+            return $this -> redirectToRoute('conversation', ['id' => $id]);
         }
 
 

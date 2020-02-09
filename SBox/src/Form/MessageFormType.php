@@ -11,8 +11,9 @@ class MessageFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('content')
+        $builder 
+            // retire le nom du label dans le form
+            ->add('content' , null, array('label' => false))
             //->add('datetime')
             //->add('state')
             //->add('groupe')
